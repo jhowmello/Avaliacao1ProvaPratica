@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avaliacao1ProvaPratica.Controllers
 {
-    [ApiController()]
-    [Route("api / [controller]")]
+    [ApiController]
+    [Route("api/[controller]")]
     public class CandidatoController : ControllerBase
     {
-        private ICandidadtoService _candidatoService;
+        private readonly ICandidadtoService _candidatoService;
 
         public CandidatoController(ICandidadtoService candidatoService)
         {
@@ -17,22 +17,26 @@ namespace Avaliacao1ProvaPratica.Controllers
         }
 
         [HttpGet("candidatos")]
-        public ActionResult<List<Candidato>> ObterCandidatoNumero()
+        public ActionResult<List<Candidato>> ObterTodosCandidatos()
         {
-
-            return Ok(_candidatoService.ObiterCandidadtoNumero);
-             
-
+            var candidatos = _candidatoService.ObterTodosCandidatos();
+            return Ok(candidatos);
         }
+
+        [HttpGet("candidato/{numero}")]
+        public ActionResult<Candidato> ObterCandidatoPorNumero(int numero)
+        {
+            var candidato = _candidatoService.ObiterCandidadtoNumero(numero);
+            if (candidato == null)
+                return NotFound("Candidato não encontrado.");
+            return Ok(candidato);
+        }
+
         [HttpPost("candidato")]
-        public ActionResult<Candidato>> Adicionar ([FromBody] Candidato novocandidato)
+        public ActionResult Adicionar([FromBody] Candidato novoCandidato)
         {
-            _candidatoService.Adicionar(novocandidato);
-
+            _candidatoService.Adicionar(novoCandidato);
             return Ok("Candidato adicionado");
-        }
-        {
-
         }
     }
 }

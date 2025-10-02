@@ -4,38 +4,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avaliacao1ProvaPratica.Controllers
 {
-    [ApiController()]
+    [ApiController]
     [Route("api/[controller]")]
-    public class VotoController
+    public class VotoController : ControllerBase
     {
-        private IVotoService _votoService;
+        private readonly IVotoService _votoService;
+
+        public VotoController(IVotoService votoService)
+        {
+            _votoService = votoService;
+        }
 
         [HttpPost("voto")]
-        public ActionResult<Voto> adicionarVoto([FromBody] Voto voto)
+        public ActionResult AdicionarVoto([FromBody] Voto voto)
         {
             _votoService.adicionarVoto(voto);
-
             return Ok("Voto adicionado");
         }
 
-        [HttpGet("ObterPorNumero")]
-        public ActionResult<Voto> ObterPorNumeroCandidato([FromBody] int voto)
+        [HttpGet("ObterPorNumero/{numeroVoto}")]
+        public ActionResult<Voto> ObterPorNumeroCandidato(int numeroVoto)
         {
-            var resultado = _votoService.ObterPorNumeroCandidato(voto);
-
-
+            var resultado = _votoService.ObterPorNumeroCandidato(numeroVoto);
+            if (resultado == null)
+                return NotFound("Voto não encontrado.");
             return Ok(resultado);
-
-           
         }
-
-
     }
-
-
-
-
-
-
-    
 }
